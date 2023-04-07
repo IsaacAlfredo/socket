@@ -26,13 +26,14 @@ const socket = net.createConnection({ host: HOST, port: PORT }, () => {
       action: "get",
       user: newUser,
     })
-  );*/
+  );
   //Busca um usuário
-  /*
+  
   //atualiza um usuário
   const updUser = {
     name: "Emilly",
-    email: "emilly@example.com",
+    oldEmail: "isaac@example.com", 
+    newEmail: "emilly@example.com",
     password: "123456",
   };
 
@@ -46,7 +47,7 @@ const socket = net.createConnection({ host: HOST, port: PORT }, () => {
   socket.write(
     JSON.stringify({
       action: "delete",
-      user: updUser,
+      email: "emilly@example.com",
     })
   );
   //procura o usuario deletado

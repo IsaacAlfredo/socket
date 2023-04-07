@@ -17,14 +17,12 @@ const server = net.createServer((socket) => {
   // Evento de recebimento de dados
   socket.on("data", (data) => {
     const request = JSON.parse(data.toString());
-    console.log(`Mensagem recebida do cliente: ${request.user.name}`);
+    console.log(`Mensagem recebida do cliente: ${request}`);
 
     // Cria um worker thread para processar a mensagem
     const worker = new Worker("./worker.js", {
       workerData: { request, users },
     });
-
-    //worker.postMessage({ status: "OK" });
 
     // Evento de recebimento de resposta do worker thread
     worker.on("message", (response) => {
