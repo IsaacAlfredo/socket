@@ -2,36 +2,34 @@ const { workerData, parentPort } = require("worker_threads");
 const fs = require("fs");
 
 // Extrai os dados da mensagem e da lista de usuários
-const { request, users } = workerData;
+const request = workerData;
 
-const usuariosJSON = fs.readFileSync("usuarios.json", "utf-8");
-const usuarios = JSON.parse(usuariosJSON);
+const usersJSON = fs.readFileSync("users.json", "utf-8");
+const users = JSON.parse(usersJSON);
 
-// Processa a mensagem
+//create
 if (request.action === "create") {
   const user = request.user;
+  users.push(user);
+  const usersUpdateJSON = JSON.stringify(users, null, 2);
 
-  // Adicionar um novo objeto ao objeto JavaScript
-  usuarios.push(user);
-  // Converter o objeto JavaScript de volta para uma string JSON
-  const usuariosAtualizadosJSON = JSON.stringify(usuarios, null, 2);
-
-  // Escrever a string JSON atualizada no arquivo
-  fs.writeFileSync("usuarios.json", usuariosAtualizadosJSON, "utf-8");
+  fs.writeFileSync("users.json", usersUpdateJSON, "utf-8");
   console.log("Novo usuário adicionado com sucesso!");
-  parentPort.postMessage({ status: "OK" });
+  parentPort.postMessage({ status: 200, message: "OK" });
+  //get
 } else if (request.action === "get") {
-  const user = usuarios.find((u) => u.email === request.user.email);
+  const user = users.find((u) => u.email === request.user.email);
   if (!user) {
-    parentPort.postMessage({ status: "user not found" });
+    parentPort.postMessage({ status: 404, message: "User not Found" });
   } else {
-    parentPort.postMessage({ status: "OK", response: user });
+    parentPort.postMessage({ status: 200, message: "OK", response: user });
   }
+  //update
 } else if (request.action === "update") {
-  const user = usuarios.find((u) => u.email === request.user.oldEmail);
-  const index = usuarios.findIndex((u) => u.email === request.user.oldEmail);
+  const user = users.find((u) => u.email === request.user.oldEmail);
+  const index = users.findIndex((u) => u.email === request.user.oldEmail);
   if (!user) {
-    parentPort.postMessage("User not found");
+    parentPort.postMessage({ status: 404, message: "User not Found" });
   } else {
     const updUser = {
       name: request.user.name,
@@ -39,27 +37,29 @@ if (request.action === "create") {
       password: request.user.password,
     };
 
-    usuarios[index] = updUser;
+    users[index] = updUser;
 
-    const usuariosAtualizadosJSON = JSON.stringify(usuarios, null, 2);
-    fs.writeFileSync("usuarios.json", usuariosAtualizadosJSON, "utf-8");
+    const usersUpdateJSON = JSON.stringify(users, null, 2);
+    fs.writeFileSync("users.json", usersUpdateJSON, "utf-8");
     console.log("Usuário atualizado com sucesso!");
 
-    parentPort.postMessage({ status: "OK", response: updUser });
+    parentPort.postMessage({ status: 200, message: "OK", response: updUser });
   }
+  //delete
 } else if (request.action === "delete") {
-  const user = usuarios.find((u) => u.email === request.email);
-  const index = usuarios.findIndex((u) => u.email === request.email);
+  const user = users.find((u) => u.email === request.email);
+  const index = users.findIndex((u) => u.email === request.email);
   if (!user) {
-    parentPort.postMessage("User not found");
+    parentPort.postMessage({ status: 404, message: "User not Found" });
   } else {
-    usuarios.splice(index, 1);
-    parentPort.postMessage("OK");
+    users.splice(index, 1);
+    parentPort.postMessage({ status: 200, message: "OK" });
 
-    const usuariosAtualizadosJSON = JSON.stringify(usuarios, null, 2);
-    fs.writeFileSync("usuarios.json", usuariosAtualizadosJSON, "utf-8");
-    console.log("Usuário atualizado com sucesso!");
+    const usersUpdateJSON = JSON.stringify(users, null, 2);
+    fs.writeFileSync("users.json", usersUpdateJSON, "utf-8");
+    console.log("Usuário deletado com sucesso!");
   }
 } else {
-  parentPort.postMessage("Bad Request");
+  //Bad Request
+  parentPort.postMessage({ status: 400, message: "Bad Request" });
 }

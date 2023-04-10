@@ -14,35 +14,39 @@ const socket = net.createConnection({ host: HOST, port: PORT }, () => {
     password: "123456",
   };
 
-  // Adiciona um usuário
+  const updUser = {
+    name: "Emilly",
+    oldEmail: "isaac@example.com",
+    newEmail: "emilly@example.com",
+    password: "123456",
+  };
+
+  //Cria um usuário
   socket.write(
     JSON.stringify({
       action: "create",
       user: newUser,
     })
   );
+
+  //Busca um usuário
   /*socket.write(
     JSON.stringify({
       action: "get",
       user: newUser,
     })
-  );
-  //Busca um usuário
-  
-  //atualiza um usuário
-  const updUser = {
-    name: "Emilly",
-    oldEmail: "isaac@example.com", 
-    newEmail: "emilly@example.com",
-    password: "123456",
-  };
+  );*/
 
+  //Atualiza um usuário
+  /*
   socket.write(
     JSON.stringify({
       action: "update",
       user: updUser,
     })
-  );
+  );*/
+
+  /*
   //deleta um usuário
   socket.write(
     JSON.stringify({
@@ -50,10 +54,18 @@ const socket = net.createConnection({ host: HOST, port: PORT }, () => {
       email: "emilly@example.com",
     })
   );
+  */
   //procura o usuario deletado
-  socket.write(
+  /*socket.write(
     JSON.stringify({
       action: "get",
+      user: updUser,
+    })
+  );*/
+
+  /*socket.write(
+    JSON.stringify({
+      action: "gete",
       user: updUser,
     })
   );*/
@@ -61,8 +73,7 @@ const socket = net.createConnection({ host: HOST, port: PORT }, () => {
 
 // Evento de recebimento de dados
 socket.on("data", (data) => {
-  const message = JSON.parse(data.toString());
-  console.log(`Resposta do servidor: ${message.status}`);
+  console.log(`Resposta do servidor: ${data}`);
   socket.end();
 });
 
