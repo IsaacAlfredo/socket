@@ -1,7 +1,7 @@
 const net = require("net");
 const { Worker } = require("worker_threads");
 
-const HOST = "127.0.0.1";
+const HOST = "0.0.0.0";
 const PORT = 8080;
 
 const server = net.createServer((socket) => {

@@ -1,10 +1,8 @@
 const net = require("net");
 
-// Configurações do cliente
-const HOST = "127.0.0.1";
+const HOST = "0.0.0.0";
 const PORT = 8080;
 
-// Cria o socket do cliente
 const socket = net.createConnection({ host: HOST, port: PORT }, () => {
   console.log(`Conectado ao servidor: ${HOST}:${PORT}`);
 
@@ -71,13 +69,11 @@ const socket = net.createConnection({ host: HOST, port: PORT }, () => {
   );*/
 });
 
-// Evento de recebimento de dados
 socket.on("data", (data) => {
   console.log(`Resposta do servidor: ${data}`);
   socket.end();
 });
 
-// Evento de fechamento de conexão
 socket.on("close", () => {
   console.log("Conexão fechada");
 });
